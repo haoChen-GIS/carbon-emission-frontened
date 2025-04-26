@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
+
 import {
   AppBar,
   Box,
@@ -23,19 +24,23 @@ export default function BasicAppBar() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" sx={{ bgcolor: "#6391c8" }}>
+      <AppBar position="static" sx={{ bgcolor: "#222529" }}>
         <Toolbar>
           <IconButton
             size="large"
             edge="start"
             color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
+            aria-label="logo"
+            sx={{ mr: 4 }}
           >
-            <MenuIcon />
+            <img src="/images/logo.png" alt="Logo" style={{ height: 72 }} />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Global Carbon Emissions
+            Global Carbon{" "}
+            <Typography variant="span" sx={{ color: "#4CAF50" }}>
+              E
+            </Typography>
+            missions
           </Typography>
           <Button
             color="inherit"
