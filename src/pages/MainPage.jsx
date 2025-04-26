@@ -3,29 +3,32 @@ import { useRef, useState, useEffect } from "react";
 import { Box, Typography, Button } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { keyframes } from "@mui/system";
+
 import BasicAppBar from "../components/BasicAppBar";
 
-// 动画
+// 文字淡入 + 上移动画
 const fadeUp = keyframes`
   0% { opacity: 0; transform: translateY(30px); }
   100% { opacity: 1; transform: translateY(0); }
 `;
+
+// 箭头上下浮动动画
 const bounce = keyframes`
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(8px); }
 `;
 
 function MainPage() {
-  const appBarRef = useRef(null); // 1. 拿到 AppBar 的ref
-  const [appBarHeight, setAppBarHeight] = useState(0);
-
   const handleScroll = () => {
     window.scrollTo({ top: window.innerHeight, behavior: "smooth" });
   };
 
+  const appBarRef = useRef(null); // 绑定 AppBar 外部容器
+  const [appBarHeight, setAppBarHeight] = useState(0);
+
   useEffect(() => {
     if (appBarRef.current) {
-      setAppBarHeight(appBarRef.current.offsetHeight); // 2. 获取真实高度
+      setAppBarHeight(appBarRef.current.offsetHeight); // 动态获取高度
     }
   }, []);
 
@@ -41,11 +44,11 @@ function MainPage() {
         sx={{
           position: "relative",
           width: "100%",
-          height: `calc(100vh - ${appBarHeight}px)`, // 3. 动态剪掉AppBar
+          height: `calc(100vh - ${appBarHeight}px)`,
           overflow: "hidden",
         }}
       >
-        {/* 背景视频 */}
+        {/* 背景视频（IPCC官方） */}
         <video
           autoPlay
           muted
@@ -64,7 +67,7 @@ function MainPage() {
           <source src="/videos/main.webm" type="video/webm" />
         </video>
 
-        {/* 左侧遮罩 */}
+        {/* 左侧遮罩增强对比度 */}
         <Box
           sx={{
             position: "absolute",
@@ -76,7 +79,7 @@ function MainPage() {
           }}
         />
 
-        {/* 中间文字 */}
+        {/* 居中文字内容区域 */}
         <Box
           sx={{
             position: "absolute",
@@ -111,18 +114,18 @@ function MainPage() {
             <Typography variant="h3" sx={{ mb: 4 }}>
               Monitoring climate change through data and science.
             </Typography>
-            <Button
+            {/* <Button
               variant="contained"
               color="primary"
               sx={{ fontSize: "1rem", px: 4, py: 1.5, borderRadius: "8px" }}
               onClick={handleScroll}
             >
               Explore Now
-            </Button>
+            </Button> */}
           </Box>
         </Box>
 
-        {/* 向下箭头 */}
+        {/* 向下滚动箭头提示 */}
         <Box
           onClick={handleScroll}
           sx={{
@@ -140,8 +143,7 @@ function MainPage() {
         </Box>
       </Box>
 
-      {/* 下方文字区域 */}
-      {/* 这里你原来写得没问题，不需要动 */}
+      {/* 下方内容区域（IPCC说明文字） */}
       <Box
         sx={{
           py: 10,
@@ -154,9 +156,172 @@ function MainPage() {
           justifyContent: "center",
         }}
       >
-        {/* 文字内容 */}
         <Box sx={{ width: "100%", maxWidth: "880px" }}>
-          {/* ... 你的文字内容 */}
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: "bold",
+              mb: 2,
+              color: "#444546",
+              textAlign: "left",
+            }}
+          >
+            Human activities have caused unprecedented changes in Earth's
+            climate.
+          </Typography>
+
+          <Typography
+            variant="body1"
+            sx={{
+              fontSize: "1.15rem",
+              color: "#555",
+              lineHeight: 1.9,
+              textAlign: "left",
+            }}
+          >
+            Human activities have{" "}
+            <Box
+              component="span"
+              sx={{
+                textDecoration: "underline",
+                color: "#444546",
+                fontWeight: 500,
+              }}
+            >
+              warmed
+            </Box>{" "}
+            Earth’s climate by more than 1°C since the late 19th century, and
+            the effects on our climate are{" "}
+            <Box
+              component="span"
+              sx={{
+                textDecoration: "underline",
+                color: "#444546",
+                fontWeight: 500,
+              }}
+            >
+              unprecedented
+            </Box>
+            . We are increasingly feeling the consequences in every inhabited{" "}
+            <Box
+              component="span"
+              sx={{
+                textDecoration: "underline",
+                color: "#444546",
+                fontWeight: 500,
+              }}
+            >
+              region
+            </Box>
+            , and the changes we experience become{" "}
+            <Box
+              component="span"
+              sx={{
+                textDecoration: "underline",
+                color: "#444546",
+                fontWeight: 500,
+              }}
+            >
+              larger
+            </Box>{" "}
+            the more the Earth warms. People in all regions will be affected in{" "}
+            <Box
+              component="span"
+              sx={{
+                textDecoration: "underline",
+                color: "#444546",
+                fontWeight: 500,
+              }}
+            >
+              multiple
+            </Box>{" "}
+            ways. We're already seeing more severe and frequent{" "}
+            <Box
+              component="span"
+              sx={{
+                textDecoration: "underline",
+                color: "#444546",
+                fontWeight: 500,
+              }}
+            >
+              extremes
+            </Box>
+            . Future emissions will determine{" "}
+            <Box
+              component="span"
+              sx={{
+                textDecoration: "underline",
+                color: "#444546",
+                fontWeight: 500,
+              }}
+            >
+              future
+            </Box>{" "}
+            global warming. With higher emissions,{" "}
+            <Box
+              component="span"
+              sx={{
+                textDecoration: "underline",
+                color: "#444546",
+                fontWeight: 500,
+              }}
+            >
+              nature
+            </Box>{" "}
+            becomes less efficient in absorbing the carbon we emit. Some changes
+            cannot be avoided, but by limiting warming we can{" "}
+            <Box
+              component="span"
+              sx={{
+                textDecoration: "underline",
+                color: "#444546",
+                fontWeight: 500,
+              }}
+            >
+              slow
+            </Box>
+            , and even stop, many of them. The{" "}
+            <Box
+              component="span"
+              sx={{
+                textDecoration: "underline",
+                color: "#444546",
+                fontWeight: 500,
+              }}
+            >
+              good news
+            </Box>{" "}
+            is that reducing our emissions quickly can limit global warming.
+          </Typography>
+
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: "bold",
+              mt: 2,
+              mb: 2,
+              color: "#444546",
+              textAlign: "left",
+            }}
+          >
+            We can reach a more sustainable world. The choices made now will
+            determine our shared future.
+          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              mt: 5,
+            }}
+          >
+            <Button
+              variant="outlined"
+              href="https://www.ipcc.ch/sr15/"
+              target="_blank"
+            >
+              View Full IPCC Report →
+            </Button>
+          </Box>
         </Box>
       </Box>
     </>
