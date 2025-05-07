@@ -9,7 +9,6 @@ import {
   Button,
   IconButton,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
 
 export default function BasicAppBar() {
   const navigate = useNavigate();
@@ -24,7 +23,7 @@ export default function BasicAppBar() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" sx={{ bgcolor: "#222529" }}>
+      <AppBar elevation={0} position="fixed" sx={{ bgcolor: "#222529" }}>
         <Toolbar>
           <IconButton
             size="large"

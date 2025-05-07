@@ -10,12 +10,23 @@ import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
+import { Grid } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import Alert from "@mui/material/Alert";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+
+//自定义组件
+import SuccessSnackbar from "../../components/Common/SuccessSnackbar";
+import PasswordField from "../../components/Common/PasswordField";
+import { API_BASE_URL } from "../../utils/api";
+
+// ✅ 提示组件封装
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 function Copyright(props) {
   return (
@@ -40,6 +51,12 @@ const defaultTheme = createTheme();
 export default function SignIn() {
   const navigate = useNavigate();
   const [error, setError] = useState(null);
+  const [successOpen, setSuccessOpen] = useState(false);
+
+  const handleSuccessClose = (event, reason) => {
+    if (reason === "clickaway") return;
+    setSuccessOpen(false);
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -48,28 +65,25 @@ export default function SignIn() {
     const password = data.get("password");
 
     try {
-      const response = await axios.post(
-        "http://localhost:4000/api/users/login",
-        {
-          username,
-          password,
-        }
-      );
+      const response = await axios.post(`${API_BASE_URL}/api/users/login`, {
+        username,
+        password,
+      });
 
       if (response.status === 200) {
-        alert("login success!");
-        navigate("/carbon-emission");
+        setSuccessOpen(true);
+        setTimeout(() => navigate("/carbon-emission"), 1500);
       } else {
         setError(
-          <Alert variant="filled" severity="error">
+          <Alert severity="error" variant="filled">
             Login failed, please try again.
           </Alert>
         );
       }
-    } catch (error) {
-      console.error("Login error:", error);
+    } catch (err) {
+      console.error("Login error:", err);
       setError(
-        <Alert variant="filled" severity="error">
+        <Alert severity="error" variant="filled">
           Login failed, please try again.
         </Alert>
       );
@@ -78,12 +92,11 @@ export default function SignIn() {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Grid container component="main" sx={{ height: "100vh" }}>
+      <Grid container sx={{ height: "100vh" }}>
         <CssBaseline />
 
-        {/* 左侧背景图区域 */}
+        {/* ✅ 左侧背景图区域 */}
         <Grid
-          item
           size={{ sm: 4, md: 7 }}
           sx={{
             display: { xs: "none", sm: "block" },
@@ -97,7 +110,8 @@ export default function SignIn() {
             backgroundPosition: "center",
           }}
         />
-        {/* 返回主页按钮 */}
+
+        {/* ✅ 返回主页按钮 */}
         <Button
           startIcon={<ArrowBackIcon />}
           onClick={() => navigate("/")}
@@ -105,14 +119,14 @@ export default function SignIn() {
             position: "absolute",
             top: 16,
             left: 16,
-            backgroundColor: "rgba(0, 0, 0, 0.4)", // 半透明黑色背景
-            color: "#fff", // 白色文字
-            textTransform: "none", // 保持文字大小写不变
+            backgroundColor: "rgba(0, 0, 0, 0.4)",
+            color: "#fff",
+            textTransform: "none",
             fontWeight: "500",
             px: 2,
             py: 0.5,
             borderRadius: "8px",
-            backdropFilter: "blur(2px)", // 加点毛玻璃效果
+            backdropFilter: "blur(2px)",
             "&:hover": {
               backgroundColor: "rgba(0, 0, 0, 0.6)",
             },
@@ -121,9 +135,8 @@ export default function SignIn() {
           Back
         </Button>
 
-        {/* 右侧表单区域 */}
+        {/* ✅ 右侧表单区域 */}
         <Grid
-          item
           size={{ xs: 12, sm: 8, md: 5 }}
           component={Paper}
           elevation={6}
@@ -184,13 +197,13 @@ export default function SignIn() {
                 Sign In
               </Button>
               <Grid container justifyContent="space-between">
-                <Grid item xs>
-                  <Link href="/forget-password" variant="body2">
+                <Grid size="auto">
+                  <Link href="/reset-password" variant="body2">
                     Forgot password?
                   </Link>
                 </Grid>
-                <Grid item>
-                  <Link href="/sign-up" variant="body2">
+                <Grid size="auto">
+                  <Link href="/register" variant="body2">
                     {"Don't have an account? Sign Up"}
                   </Link>
                 </Grid>
@@ -200,6 +213,21 @@ export default function SignIn() {
           </Box>
         </Grid>
       </Grid>
+
+      {/* ✅ 登录成功提示 */}
+      <SuccessSnackbar
+        open={successOpen}
+        autoHideDuration={2000}
+        onClose={handleSuccessClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        message="Login successful! Redirecting..."
+      >
+        <Alert
+          onClose={handleSuccessClose}
+          severity="success"
+          sx={{ width: "100%" }}
+        ></Alert>
+      </SuccessSnackbar>
     </ThemeProvider>
   );
 }

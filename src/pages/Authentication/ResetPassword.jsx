@@ -9,11 +9,14 @@ import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import LockResetIcon from "@mui/icons-material/LockReset";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Alert from "@mui/material/Alert";
+
+import PasswordField from "../../components/Common/PasswordField";
+import { API_BASE_URL } from "../../utils/api";
 
 function Copyright(props) {
   return (
@@ -35,37 +38,47 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 
-function SignUp() {
+function ForgetPassword() {
   const navigate = useNavigate();
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
 
+  const [username, setUsername] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const username = data.get("username");
-    const password = data.get("password");
+
+    if (newPassword !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
 
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/users/signup",
+        `${API_BASE_URL}/api/users/reset-password`,
         {
           username,
-          password,
+          newPassword,
+          confirmPassword,
         }
       );
 
-      if (response.status === 201) {
-        setSuccess("Signup successful!");
+      if (response.status === 200) {
+        setSuccess("Password reset successful!");
         setTimeout(() => {
-          navigate("/");
+          navigate("/login");
         }, 1000);
       } else {
-        setError(response.data.message || "Signup failed, please try again.");
+        setError(
+          response.data.message || "Password reset failed, please try again."
+        );
       }
     } catch (err) {
       setError(
-        err.response?.data?.message || "Signup failed, please try again."
+        err.response?.data?.message ||
+          "Password reset failed, please try again."
       );
     }
   };
@@ -83,10 +96,10 @@ function SignUp() {
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <LockOutlinedIcon />
+            <LockResetIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign up
+            Reset Password
           </Typography>
           {error && (
             <Alert severity="error" sx={{ mt: 2 }}>
@@ -105,25 +118,31 @@ function SignUp() {
             sx={{ mt: 3 }}
           >
             <Grid container spacing={2}>
-              <Grid item size={12}>
+              <Grid size={12}>
                 <TextField
                   required
                   fullWidth
                   id="username"
                   label="User Name"
                   name="username"
-                  autoComplete="username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                 />
               </Grid>
-              <Grid item size={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="new-password"
+              <Grid size={12}>
+                <PasswordField
+                  label="New Password"
+                  name="newPassword"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                />
+              </Grid>
+              <Grid size={12}>
+                <PasswordField
+                  label="Confirm New Password"
+                  name="confirmPassword"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                 />
               </Grid>
             </Grid>
@@ -133,12 +152,12 @@ function SignUp() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign Up
+              Reset Password
             </Button>
             <Grid container justifyContent="flex-end">
-              <Grid item>
-                <Link href="/sign-in" variant="body2">
-                  Already have an account? Sign in
+              <Grid>
+                <Link href="/login" variant="body2">
+                  Remembered your password? Sign in
                 </Link>
               </Grid>
             </Grid>
@@ -150,4 +169,4 @@ function SignUp() {
   );
 }
 
-export default SignUp;
+export default ForgetPassword;

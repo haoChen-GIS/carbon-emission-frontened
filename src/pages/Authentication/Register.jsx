@@ -9,12 +9,13 @@ import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import LockResetIcon from "@mui/icons-material/LockReset";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Alert from "@mui/material/Alert";
 
+import { API_BASE_URL } from "../../utils/api";
 function Copyright(props) {
   return (
     <Typography
@@ -35,7 +36,7 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 
-function ForgetPassword() {
+function SignUp() {
   const navigate = useNavigate();
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -44,37 +45,25 @@ function ForgetPassword() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const username = data.get("username");
-    const newPassword = data.get("newPassword");
-    const confirmPassword = data.get("confirmPassword");
-
-    if (newPassword !== confirmPassword) {
-      setError("Passwords do not match.");
-      return;
-    }
+    const password = data.get("password");
 
     try {
-      const response = await axios.post(
-        "http://localhost:4000/api/users/forget-password",
-        {
-          username,
-          newPassword,
-        }
-      );
+      const response = await axios.post(`${API_BASE_URL}/api/users/register`, {
+        username,
+        password,
+      });
 
-      if (response.status === 200) {
-        setSuccess("Password reset successful!");
+      if (response.status === 201) {
+        setSuccess("Signup successful!");
         setTimeout(() => {
-          navigate("/sign-in");
+          navigate("/login");
         }, 1000);
       } else {
-        setError(
-          response.data.message || "Password reset failed, please try again."
-        );
+        setError(response.data.message || "Signup failed, please try again.");
       }
     } catch (err) {
       setError(
-        err.response?.data?.message ||
-          "Password reset failed, please try again."
+        err.response?.data?.message || "Signup failed, please try again."
       );
     }
   };
@@ -92,10 +81,10 @@ function ForgetPassword() {
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <LockResetIcon />
+            <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Reset Password
+            Sign up
           </Typography>
           {error && (
             <Alert severity="error" sx={{ mt: 2 }}>
@@ -114,7 +103,7 @@ function ForgetPassword() {
             sx={{ mt: 3 }}
           >
             <Grid container spacing={2}>
-              <Grid size={12}>
+              <Grid item size={12}>
                 <TextField
                   required
                   fullWidth
@@ -124,25 +113,14 @@ function ForgetPassword() {
                   autoComplete="username"
                 />
               </Grid>
-              <Grid size={12}>
+              <Grid item size={12}>
                 <TextField
                   required
                   fullWidth
-                  name="newPassword"
-                  label="New Password"
+                  name="password"
+                  label="Password"
                   type="password"
-                  id="newPassword"
-                  autoComplete="new-password"
-                />
-              </Grid>
-              <Grid size={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="confirmPassword"
-                  label="Confirm New Password"
-                  type="password"
-                  id="confirmPassword"
+                  id="password"
                   autoComplete="new-password"
                 />
               </Grid>
@@ -153,12 +131,12 @@ function ForgetPassword() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Reset Password
+              Sign Up
             </Button>
             <Grid container justifyContent="flex-end">
-              <Grid size="auto">
+              <Grid item>
                 <Link href="/sign-in" variant="body2">
-                  Remembered your password? Sign in
+                  Already have an account? Sign in
                 </Link>
               </Grid>
             </Grid>
@@ -170,4 +148,4 @@ function ForgetPassword() {
   );
 }
 
-export default ForgetPassword;
+export default SignUp;

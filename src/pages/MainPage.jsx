@@ -4,7 +4,7 @@ import { Box, Typography, Button } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { keyframes } from "@mui/system";
 
-import BasicAppBar from "../components/BasicAppBar";
+import BasicAppBar from "../components/Common/BasicAppBar";
 
 // 文字淡入 + 上移动画
 const fadeUp = keyframes`

@@ -47,14 +47,14 @@ function HomePage() {
             <Grid item xs={12} md={6}>
               <Typography variant="body1">
                 Most human economic activities release greenhouse gases into the
-                Earth’s atmosphere. We use satellites and other remote sensing
+                Earth's atmosphere. We use satellites and other remote sensing
                 technologies to spot these emissions activities.
               </Typography>
             </Grid>
             <Grid item xs={12} md={6}>
               <Box
                 component="img"
-                src="/images/powerplant.jpg"
+                src="/images/login.jpg"
                 alt="Power Plant"
                 sx={{ width: "100%", borderRadius: 2 }}
               />
