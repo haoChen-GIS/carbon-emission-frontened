@@ -13,14 +13,12 @@ import Box from "@mui/material/Box";
 import { Grid } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
-import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 //自定义组件
 import SuccessSnackbar from "../../components/Common/SuccessSnackbar";
-import PasswordField from "../../components/Common/PasswordField";
 import { API_BASE_URL } from "../../utils/api";
 
 // ✅ 提示组件封装

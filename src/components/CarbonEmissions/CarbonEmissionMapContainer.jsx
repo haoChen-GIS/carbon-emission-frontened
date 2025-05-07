@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState, useMemo } from "react";
 import { Box, Slider, Typography, IconButton } from "@mui/material";
 import { PlayArrow, Pause } from "@mui/icons-material";
 
+import { API_BASE_URL } from "../../utils/api";
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 import CarbonEmissionChart from "./CarbonEmissionChart";
 import Legend from "../Map/Legend";
@@ -12,6 +13,7 @@ function CarbonEmissionMapContainer({
   layersVisibility = {},
   sidebarOpen,
 }) {
+  console.log(API_BASE_URL);
   const mapContainer = useRef(null);
   const map = useRef(null);
   const [year, setYear] = useState(2022);
@@ -193,7 +195,7 @@ function CarbonEmissionMapContainer({
 
           try {
             const response = await fetch(
-              `http://localhost:4000/api/emissions/${country}`
+              `${API_BASE_URL}/api/emissions/${country}`
             );
             const result = await response.json();
 
@@ -252,7 +254,7 @@ function CarbonEmissionMapContainer({
       const fetchTopNEmissions = async () => {
         try {
           const response = await fetch(
-            `http://localhost:4000/api/emissions/top/${topN}/${year}`
+            `${API_BASE_URL}/api/emissions/top/${topN}/${year}`
           );
           const data = await response.json();
           if (Array.isArray(data.emissions)) {
