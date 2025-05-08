@@ -50,7 +50,12 @@ function MapePageFooter() {
           </Typography>
         </LeftBox>
         <RightBox>
-          <Typography variant="subtitle2">See Carbon. Act Smarter.</Typography>
+          <Typography
+            variant="subtitle2"
+            sx={{ display: { xs: "none", sm: "block" } }}
+          >
+            See Carbon. Act Smarter.
+          </Typography>
           <img
             src={
               mode === "dark"
