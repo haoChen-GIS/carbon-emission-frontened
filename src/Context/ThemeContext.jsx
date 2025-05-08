@@ -21,7 +21,7 @@ function ThemeProvider({ children }) {
         mode,
         background: {
           default: isDark ? "#232529" : "#f2f2f2", // 全局背景色
-          paper: isDark ? "#232529" : "#ffffff", // 卡片背景等
+          paper: isDark ? "#363d3f" : "#ffffff", // 卡片背景等
         },
         text: {
           primary: isDark ? "#ffffff" : "#000000",
