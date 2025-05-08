@@ -30,10 +30,10 @@ function Legend({ labels, colors }) {
       </Typography>
 
       {isMobile ? (
-        // ✅ 移动端：两列横排
+        // ✅ 移动端：两列横排，使用 v7 Grid API
         <Grid container spacing={1}>
           {labels.map((label, i) => (
-            <Grid item xs={6} key={i}>
+            <Grid size={6} key={i}>
               <Box sx={{ display: "flex", alignItems: "center" }}>
                 <Box
                   sx={{
