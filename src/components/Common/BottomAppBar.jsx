@@ -1,32 +1,45 @@
-import { AppBar, Toolbar, Typography, Box } from "@mui/material";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Box,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import { styled } from "@mui/system";
 import useThemeContext from "../../Context/useThemeContext";
-import { useTheme } from "@mui/material/styles"; // ✅ 获取全局颜色
 
 const StyledToolbar = styled(Toolbar)({
   display: "flex",
   justifyContent: "space-between",
-  height: "70px",
+  alignItems: "center",
+  minHeight: "auto", // 允许高度自适应内容
+  paddingTop: 8,
+  paddingBottom: 8,
 });
 
 const LeftBox = styled(Box)({
   display: "flex",
   alignItems: "center",
-  flex: 3,
-  gap: 2,
+  flexGrow: 1,
+  gap: 8,
+  overflow: "hidden", // 防止内容溢出
 });
 
 const RightBox = styled(Box)({
   display: "flex",
   justifyContent: "flex-end",
   alignItems: "center",
-  flex: 2,
-  gap: 30,
+  gap: 16,
 });
 
 function MapePageFooter() {
   const { mode } = useThemeContext();
-  const theme = useTheme(); // ✅ 全局 theme
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const schoolName = "SUZHOU UNIVERSITY OF SCIENCE AND TECHNOLOGY";
+  const schoolNameShort = "USTS"; // 缩写
 
   return (
     <AppBar
@@ -43,15 +56,28 @@ function MapePageFooter() {
           <img
             src="images/USTS.png"
             alt="School Logo"
-            style={{ width: 50, height: 50, marginRight: 10 }}
+            style={{
+              width: isMobile ? 30 : 50,
+              height: isMobile ? 30 : 50,
+              marginRight: 6,
+            }}
           />
-          <Typography variant="subtitle2" fontWeight={200}>
-            SUZHOU UNIVERSITY OF SCIENCE AND TECHNOLOGY
+          <Typography
+            variant={isMobile ? "caption" : "subtitle2"}
+            fontWeight={200}
+            sx={{
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis", // 超出部分显示省略号
+              fontSize: isMobile ? "0.7rem" : "0.8rem",
+            }}
+          >
+            {isMobile ? schoolNameShort : schoolName}
           </Typography>
         </LeftBox>
         <RightBox>
           <Typography
-            variant="subtitle2"
+            variant={isMobile ? "caption" : "subtitle2"}
             sx={{ display: { xs: "none", sm: "block" } }}
           >
             See Carbon. Act Smarter.
@@ -63,7 +89,11 @@ function MapePageFooter() {
                 : "images/Carbon-Atlas-Dark.png"
             }
             alt="Carbon Atlas Logo"
-            style={{ width: 50, height: 50, marginRight: 10 }}
+            style={{
+              width: isMobile ? 30 : 50,
+              height: isMobile ? 30 : 50,
+              marginRight: 6,
+            }}
           />
         </RightBox>
       </StyledToolbar>

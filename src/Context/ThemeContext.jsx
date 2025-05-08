@@ -20,8 +20,8 @@ function ThemeProvider({ children }) {
       palette: {
         mode,
         background: {
-          default: isDark ? "#232529" : "#f2f2f2", // 全局背景色
-          paper: isDark ? "#363d3f" : "#ffffff", // 卡片背景等
+          default: isDark ? "#343a40" : "#f2f2f2", // 全局背景色
+          paper: isDark ? "#495057" : "#ffffff", // 卡片背景等
         },
         text: {
           primary: isDark ? "#ffffff" : "#000000",

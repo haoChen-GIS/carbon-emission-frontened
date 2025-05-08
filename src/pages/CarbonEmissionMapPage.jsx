@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import {
   Box,
   IconButton,
@@ -11,7 +10,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import MenuIcon from "@mui/icons-material/Menu";
 import LayersIcon from "@mui/icons-material/Layers";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import TopAppBar from "../components/Common/TopAppBar";
 import BottomAppBar from "../components/Common/BottomAppBar";
@@ -25,24 +24,29 @@ export default function CarbonEmissionMapPage() {
   const [showLayerPanelDesktop, setShowLayerPanelDesktop] = useState(false);
   const [showPanelMobile, setShowPanelMobile] = useState(false);
   const [activeTabMobile, setActiveTabMobile] = useState(0);
+  const [showTopEmissionsLayerControl, setShowTopEmissionsLayerControl] =
+    useState(false); // 控制是否显示 Top Emitters 控制项
   const [layersVisibility, setLayersVisibility] = useState({
     "emissions-layer": true,
-    "top-emissions-layer": true,
+    "top-emissions-layer": false, // 初始时 Top Emitters 图层不可见
   });
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  // 处理移动端视口高度
   useEffect(() => {
-    const handleResize = () => {
-      const vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty("--vh", `${vh}px`);
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+    // 当 topN 改变时，显示 Top Emitters 图层控制并将其默认设置为可见
+    if (topN !== null) {
+      setShowTopEmissionsLayerControl(true);
+      setLayersVisibility((prev) => ({ ...prev, "top-emissions-layer": true }));
+    } else {
+      setShowTopEmissionsLayerControl(false);
+      setLayersVisibility((prev) => ({
+        ...prev,
+        "top-emissions-layer": false,
+      }));
+    }
+  }, [topN]);
 
   // Mobile Panel Handlers
   const handleTabChangeMobile = (event, newValue) => {
@@ -62,33 +66,14 @@ export default function CarbonEmissionMapPage() {
   };
 
   return (
-    <Box
-      sx={{
-        height: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        "@media (max-width: 600px)": {
-          height: "calc(var(--vh, 1vh) * 100)",
-          overflow: "hidden",
-        },
-      }}
-    >
+    <Box sx={{ height: "100vh", display: "flex", flexDirection: "column" }}>
       {/* 顶部导航栏 */}
       <Box>
         <TopAppBar />
       </Box>
 
       {/* 中间区域：Sidebar + LayerControl + Map */}
-      <Box
-        sx={{
-          flex: 1,
-          display: "flex",
-          position: "relative",
-          "@media (max-width: 600px)": {
-            height: "calc(100% - 60px)",
-          },
-        }}
-      >
+      <Box sx={{ flex: 1, display: "flex", position: "relative" }}>
         {/* Desktop Layout */}
         {!isMobile && (
           <>
@@ -123,6 +108,7 @@ export default function CarbonEmissionMapPage() {
                 <LayerControlWrapper
                   layersVisibility={layersVisibility}
                   setLayersVisibility={setLayersVisibility}
+                  showTopEmissions={showTopEmissionsLayerControl} // 传递控制 Top Emitters 显示的状态
                 />
               </Box>
             )}
@@ -136,11 +122,11 @@ export default function CarbonEmissionMapPage() {
             {showPanelMobile && (
               <Box
                 sx={{
-                  position: "fixed",
-                  bottom: "60px",
+                  position: "absolute",
+                  bottom: 0,
                   left: 0,
                   width: "100%",
-                  height: "50vh",
+                  height: "60%",
                   zIndex: 10,
                   bgcolor: "background.paper",
                   transition: "transform 0.3s",
@@ -149,15 +135,12 @@ export default function CarbonEmissionMapPage() {
                     : "translateY(100%)",
                   display: "flex",
                   flexDirection: "column",
-                  borderTopLeftRadius: "8px",
-                  borderTopRightRadius: "8px",
-                  boxShadow: "0 -2px 10px rgba(0,0,0,0.2)",
                 }}
               >
                 <Tabs
                   value={activeTabMobile}
                   onChange={handleTabChangeMobile}
-                  sx={{ bgcolor: "background.paper" }}
+                  sx={{ bgcolor: "grey.800" }}
                 >
                   <Tab label="Sidebar" />
                   <Tab label="Layers" />
@@ -169,6 +152,7 @@ export default function CarbonEmissionMapPage() {
                   <LayerControlWrapper
                     layersVisibility={layersVisibility}
                     setLayersVisibility={setLayersVisibility}
+                    showTopEmissions={showTopEmissionsLayerControl} // 传递控制 Top Emitters 显示的状态
                   />
                 )}
               </Box>
@@ -206,10 +190,7 @@ export default function CarbonEmissionMapPage() {
 
         {/* 地图区域 */}
         <Box
-          sx={{
-            flexGrow: 1,
-            position: "relative",
-          }}
+          sx={{ flexGrow: 1 }}
           onClick={() => {
             if (isMobile && showPanelMobile) setShowPanelMobile(false);
           }}
@@ -218,7 +199,7 @@ export default function CarbonEmissionMapPage() {
             region={region}
             topN={topN}
             layersVisibility={layersVisibility}
-            sidebarOpen={!isMobile}
+            sidebarOpen={!isMobile} // Desktop sidebar is always conceptually open
             layerPanelOpen={!isMobile && showLayerPanelDesktop}
             mobileSidebarOpen={
               isMobile && showPanelMobile && activeTabMobile === 0

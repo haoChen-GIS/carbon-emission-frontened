@@ -10,6 +10,7 @@ import {
 export default function LayerControlPanel({
   layersVisibility,
   setLayersVisibility,
+  showTopEmissions, // 接收来自父组件的状态
 }) {
   const handleChange = (layerId) => {
     setLayersVisibility((prev) => ({
@@ -42,15 +43,17 @@ export default function LayerControlPanel({
           }
           label="Carbon Emission Layer"
         />
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={layersVisibility["top-emissions-layer"]}
-              onChange={() => handleChange("top-emissions-layer")}
-            />
-          }
-          label="Top Emitters"
-        />
+        {showTopEmissions && ( // 只有当 showTopEmissions 为 true 时才渲染
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={layersVisibility["top-emissions-layer"]}
+                onChange={() => handleChange("top-emissions-layer")}
+              />
+            }
+            label="Top Emitters"
+          />
+        )}
       </FormGroup>
     </Box>
   );

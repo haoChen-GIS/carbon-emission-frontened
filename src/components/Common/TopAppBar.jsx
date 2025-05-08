@@ -1,9 +1,17 @@
-import { AppBar, Box, Toolbar, Typography, IconButton } from "@mui/material";
+import {
+  AppBar,
+  Box,
+  Toolbar,
+  Typography,
+  IconButton,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import ThemeMenu from "../Common/ThemeMenu";
-import { useTheme } from "@mui/material/styles";
 
 export default function TopAppBar() {
-  const theme = useTheme(); // 直接从 MUI 主题拿颜色
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -11,9 +19,9 @@ export default function TopAppBar() {
         elevation={0}
         position="static"
         sx={{
-          bgcolor: theme.palette.background.default, // ✅ 使用 Theme 中的颜色
+          bgcolor: theme.palette.background.default,
           color: theme.palette.text.primary,
-          boxShadow: "none", // 可选，去掉阴影
+          boxShadow: "none",
         }}
       >
         <Toolbar>
@@ -22,24 +30,56 @@ export default function TopAppBar() {
             edge="start"
             color="inherit"
             aria-label="logo"
-            sx={{ mr: 4 }}
+            sx={{ mr: 2 }}
           >
-            <img src="/images/logo.png" alt="Logo" style={{ height: 72 }} />
+            <img
+              src="/images/logo.png"
+              alt="Logo"
+              style={{ height: isMobile ? 40 : 72 }}
+            />{" "}
+            {/* 移动端 logo 缩小 */}
           </IconButton>
 
           <Typography
-            variant="h6"
             component="div"
-            sx={{ flexGrow: 1, color: theme.palette.text.primary }}
+            sx={{
+              flexGrow: 1,
+              color: theme.palette.text.primary,
+              overflow: "hidden",
+              whiteSpace: "nowrap",
+            }}
           >
-            Global Carbon{" "}
             <Typography
-              variant="span"
-              sx={{ color: "#4CAF50", fontWeight: "bold" }}
+              variant={isMobile ? "subtitle1" : "h6"} // 移动端使用 subtitle1
+              sx={{
+                fontWeight: isMobile ? 500 : 400,
+                fontSize: isMobile ? "1rem" : "inherit",
+                display: "inline",
+              }}
+            >
+              {isMobile ? "Carbon " : "Global Carbon "}
+            </Typography>
+            <Typography
+              variant={isMobile ? "subtitle1" : "h6"}
+              sx={{
+                color: "#4CAF50",
+                fontWeight: isMobile ? 500 : 400,
+                fontSize: isMobile ? "1rem" : "inherit",
+                display: "inline",
+              }}
             >
               E
             </Typography>
-            missions
+            <Typography
+              variant={isMobile ? "subtitle1" : "h6"}
+              sx={{
+                display: "inline",
+                fontWeight: isMobile ? 500 : 400,
+                fontSize: isMobile ? "1rem" : "inherit",
+              }}
+            >
+              missions
+            </Typography>
           </Typography>
 
           <ThemeMenu />
