@@ -39,7 +39,7 @@ function MapePageFooter() {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const schoolName = "SUZHOU UNIVERSITY OF SCIENCE AND TECHNOLOGY";
-  const schoolNameShort = "USTS"; // 缩写
+  //const schoolNameShort = "USTS"; // 缩写
 
   return (
     <AppBar
@@ -72,7 +72,8 @@ function MapePageFooter() {
               fontSize: isMobile ? "0.7rem" : "0.8rem",
             }}
           >
-            {isMobile ? schoolNameShort : schoolName}
+            {/* {isMobile ? schoolNameShort : schoolName} */}
+            {schoolName}
           </Typography>
         </LeftBox>
         <RightBox>
