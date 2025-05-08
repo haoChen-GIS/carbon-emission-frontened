@@ -23,7 +23,7 @@ export default function BasicAppBar() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar elevation={0} position="fixed" sx={{ bgcolor: "#222529" }}>
+      <AppBar elevation={0} position="static" sx={{ bgcolor: "#222529" }}>
         <Toolbar>
           <IconButton
             size="large"

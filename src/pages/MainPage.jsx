@@ -43,11 +43,10 @@ function MainPage() {
         sx={{
           position: "relative",
           width: "100%",
-          height: `calc(100vh - ${appBarHeight}px)`,
+          height: `calc(100vh - ${appBarHeight}px)`, // 确保不超出屏幕
           overflow: "hidden",
-          display: "flex",
-          flexDirection: "column",
-          pt: `${appBarHeight}px`, // 防止导航栏遮挡
+          display: "flex", // 新增：启用 Flex 布局
+          flexDirection: "column", // 垂直排列
         }}
       >
         {/* 背景视频（完全不变） */}
