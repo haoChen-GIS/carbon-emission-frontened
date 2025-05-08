@@ -10,7 +10,6 @@ export default function LayerControlWrapper({
       sx={{
         height: "100%",
         bgcolor: "background.paper",
-        borderRight: "1px solid #ccc",
       }}
     >
       <LayerControlPanel
