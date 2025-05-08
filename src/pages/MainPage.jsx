@@ -6,13 +6,12 @@ import { keyframes } from "@mui/system";
 
 import BasicAppBar from "../components/Common/BasicAppBar";
 
-// 文字淡入 + 上移动画
+// 保持原有动画
 const fadeUp = keyframes`
   0% { opacity: 0; transform: translateY(30px); }
   100% { opacity: 1; transform: translateY(0); }
 `;
 
-// 箭头上下浮动动画
 const bounce = keyframes`
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(8px); }
@@ -23,32 +22,34 @@ function MainPage() {
     window.scrollTo({ top: window.innerHeight, behavior: "smooth" });
   };
 
-  const appBarRef = useRef(null); // 绑定 AppBar 外部容器
+  const appBarRef = useRef(null);
   const [appBarHeight, setAppBarHeight] = useState(0);
 
   useEffect(() => {
     if (appBarRef.current) {
-      setAppBarHeight(appBarRef.current.offsetHeight); // 动态获取高度
+      setAppBarHeight(appBarRef.current.offsetHeight);
     }
   }, []);
 
   return (
     <>
-      {/* 顶部导航栏 */}
+      {/* 顶部导航栏（完全不变） */}
       <Box ref={appBarRef}>
         <BasicAppBar />
       </Box>
 
-      {/* 顶部主视觉区域 */}
+      {/* 主视觉区域：仅调整高度和布局结构 */}
       <Box
         sx={{
           position: "relative",
           width: "100%",
-          height: `calc(100vh - ${appBarHeight}px)`,
+          height: `calc(100vh - ${appBarHeight}px)`, // 确保不超出屏幕
           overflow: "hidden",
+          display: "flex", // 新增：启用 Flex 布局
+          flexDirection: "column", // 垂直排列
         }}
       >
-        {/* 背景视频（IPCC官方） */}
+        {/* 背景视频（完全不变） */}
         <video
           autoPlay
           muted
@@ -67,7 +68,7 @@ function MainPage() {
           <source src="/videos/main.webm" type="video/webm" />
         </video>
 
-        {/* 左侧遮罩增强对比度 */}
+        {/* 遮罩（完全不变） */}
         <Box
           sx={{
             position: "absolute",
@@ -79,14 +80,11 @@ function MainPage() {
           }}
         />
 
-        {/* 居中文字内容区域 */}
+        {/* 文字内容区域：调整为 Flex 子项 */}
         <Box
           sx={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
+            flex: 1, // 占用剩余空间
+            position: "relative",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -94,6 +92,7 @@ function MainPage() {
             px: 2,
           }}
         >
+          {/* 原有文字内容（完全不变） */}
           <Box
             sx={{
               textAlign: "center",
@@ -110,27 +109,18 @@ function MainPage() {
             >
               The future is in our hands.
             </Typography>
-
             <Typography variant="h3" sx={{ mb: 4 }}>
               Monitoring climate change through data and science.
             </Typography>
-            {/* <Button
-              variant="contained"
-              color="primary"
-              sx={{ fontSize: "1rem", px: 4, py: 1.5, borderRadius: "8px" }}
-              onClick={handleScroll}
-            >
-              Explore Now
-            </Button> */}
           </Box>
         </Box>
 
-        {/* 向下滚动箭头提示 */}
+        {/* 向下箭头：固定在底部 */}
         <Box
           onClick={handleScroll}
           sx={{
             position: "absolute",
-            bottom: 24,
+            bottom: "24px",
             left: "50%",
             transform: "translateX(-50%)",
             zIndex: 3,
