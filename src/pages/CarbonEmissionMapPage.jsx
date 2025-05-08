@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   Box,
   IconButton,
@@ -32,6 +33,17 @@ export default function CarbonEmissionMapPage() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
+  // 处理移动端视口高度
+  useEffect(() => {
+    const handleResize = () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   // Mobile Panel Handlers
   const handleTabChangeMobile = (event, newValue) => {
     setActiveTabMobile(newValue);
@@ -50,14 +62,33 @@ export default function CarbonEmissionMapPage() {
   };
 
   return (
-    <Box sx={{ height: "100vh", display: "flex", flexDirection: "column" }}>
+    <Box
+      sx={{
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        "@media (max-width: 600px)": {
+          height: "calc(var(--vh, 1vh) * 100)",
+          overflow: "hidden",
+        },
+      }}
+    >
       {/* 顶部导航栏 */}
       <Box>
         <TopAppBar />
       </Box>
 
       {/* 中间区域：Sidebar + LayerControl + Map */}
-      <Box sx={{ flex: 1, display: "flex", position: "relative" }}>
+      <Box
+        sx={{
+          flex: 1,
+          display: "flex",
+          position: "relative",
+          "@media (max-width: 600px)": {
+            height: "calc(100% - 60px)",
+          },
+        }}
+      >
         {/* Desktop Layout */}
         {!isMobile && (
           <>
@@ -105,11 +136,11 @@ export default function CarbonEmissionMapPage() {
             {showPanelMobile && (
               <Box
                 sx={{
-                  position: "absolute",
-                  bottom: 0,
+                  position: "fixed",
+                  bottom: "60px",
                   left: 0,
                   width: "100%",
-                  height: "60%",
+                  height: "50vh",
                   zIndex: 10,
                   bgcolor: "background.paper",
                   transition: "transform 0.3s",
@@ -118,12 +149,15 @@ export default function CarbonEmissionMapPage() {
                     : "translateY(100%)",
                   display: "flex",
                   flexDirection: "column",
+                  borderTopLeftRadius: "8px",
+                  borderTopRightRadius: "8px",
+                  boxShadow: "0 -2px 10px rgba(0,0,0,0.2)",
                 }}
               >
                 <Tabs
                   value={activeTabMobile}
                   onChange={handleTabChangeMobile}
-                  sx={{ bgcolor: "grey.800" }}
+                  sx={{ bgcolor: "background.paper" }}
                 >
                   <Tab label="Sidebar" />
                   <Tab label="Layers" />
@@ -172,7 +206,10 @@ export default function CarbonEmissionMapPage() {
 
         {/* 地图区域 */}
         <Box
-          sx={{ flexGrow: 1 }}
+          sx={{
+            flexGrow: 1,
+            position: "relative",
+          }}
           onClick={() => {
             if (isMobile && showPanelMobile) setShowPanelMobile(false);
           }}
@@ -181,7 +218,7 @@ export default function CarbonEmissionMapPage() {
             region={region}
             topN={topN}
             layersVisibility={layersVisibility}
-            sidebarOpen={!isMobile} // Desktop sidebar is always conceptually open
+            sidebarOpen={!isMobile}
             layerPanelOpen={!isMobile && showLayerPanelDesktop}
             mobileSidebarOpen={
               isMobile && showPanelMobile && activeTabMobile === 0

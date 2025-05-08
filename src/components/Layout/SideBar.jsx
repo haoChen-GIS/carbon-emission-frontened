@@ -39,7 +39,7 @@ function SideBar({ setTopN, setRegion }) {
         width: 240,
         height: "100%",
         padding: 2,
-        bgcolor: theme.palette.background.default,
+        bgcolor: theme.palette.background.paper,
         color: theme.palette.text.primary,
       }}
     >
