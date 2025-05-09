@@ -370,7 +370,12 @@ function CarbonEmissionMapContainer({
           />
         </Box>
       </Box>
-      <Legend labels={labels} colors={colors} sidebarOpen={sidebarOpen} />
+      <Legend
+        labels={labels}
+        colors={colors}
+        sizes={sizes}
+        sidebarOpen={sidebarOpen}
+      />
 
       <CarbonEmissionChart
         open={chartOpen}
