@@ -15,7 +15,6 @@ function ThemeProvider({ children }) {
 
   const muiTheme = useMemo(() => {
     const isDark = mode === "dark";
-
     return createTheme({
       palette: {
         mode,

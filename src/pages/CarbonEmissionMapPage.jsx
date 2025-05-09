@@ -35,7 +35,7 @@ export default function CarbonEmissionMapPage() {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   useEffect(() => {
-    // 当 topN 改变时，显示 Top Emitters 图层控制并将其默认设置为可见
+    // topN 改变时，显示 Top Emitters 图层控制并将其默认设置为可见
     if (topN !== null) {
       setShowTopEmissionsLayerControl(true);
       setLayersVisibility((prev) => ({ ...prev, "top-emissions-layer": true }));

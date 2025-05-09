@@ -19,8 +19,8 @@ function Legend({ labels, colors }) {
         p: 2,
         borderRadius: 1,
         boxShadow: 3,
-        minWidth: isMobile ? 260 : 200,
-        maxWidth: isMobile ? 300 : undefined,
+        minWidth: isMobile ? 260 : 260,
+        maxWidth: isMobile ? 320 : 360,
         border: "1px solid #ccc",
         ...positionStyle,
       }}
@@ -30,28 +30,36 @@ function Legend({ labels, colors }) {
       </Typography>
 
       {isMobile ? (
-        // Mobile view with 2 columns
-        <Grid container spacing={1} columns={2}>
+        // ✅ 移动端：两行四列
+        <Grid container spacing={1}>
           {labels.map((label, i) => (
-            <Grid key={i} sx={{ gridColumn: "span 1" }}>
-              <Box sx={{ display: "flex", alignItems: "center" }}>
+            <Grid key={i} size={3}>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  textAlign: "center",
+                }}
+              >
                 <Box
                   sx={{
-                    width: 14,
-                    height: 14,
+                    width: 16,
+                    height: 16,
                     borderRadius: "50%",
                     backgroundColor: colors[i],
                     border: "1px solid #666",
-                    marginRight: 0.5,
-                    flexShrink: 0,
+                    mb: 0.5,
                   }}
                 />
                 <Typography
-                  variant="body2"
+                  variant="caption"
                   sx={{
                     fontSize: "0.7rem",
                     whiteSpace: "nowrap",
-                    overflow: "visible",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    maxWidth: 80,
                   }}
                 >
                   {label}
@@ -61,10 +69,10 @@ function Legend({ labels, colors }) {
           ))}
         </Grid>
       ) : (
-        // Desktop view
+        // ✅ 桌面端：两列
         <Grid container spacing={2}>
           {labels.map((label, i) => (
-            <Grid key={i}>
+            <Grid key={i} size={6}>
               <Box sx={{ display: "flex", alignItems: "center" }}>
                 <Box
                   sx={{
