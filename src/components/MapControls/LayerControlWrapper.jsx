@@ -4,7 +4,9 @@ import LayerControlPanel from "./LayerControlPanel";
 export default function LayerControlWrapper({
   layersVisibility,
   setLayersVisibility,
-  showTopEmissions, // ✅ 接收 showTopEmissions prop
+  showBubbleRendering, // ✅ 从 props 接收
+  showTopEmissions,
+  showPlanarRendering,
 }) {
   return (
     <Box
@@ -16,7 +18,9 @@ export default function LayerControlWrapper({
       <LayerControlPanel
         layersVisibility={layersVisibility}
         setLayersVisibility={setLayersVisibility}
-        showTopEmissions={showTopEmissions} // ✅ 将 showTopEmissions 传递给 LayerControlPanel
+        showBubbleRendering={showBubbleRendering} // ✅ 正确传值
+        showTopEmissions={showTopEmissions}
+        showPlanarRendering={showPlanarRendering}
       />
     </Box>
   );

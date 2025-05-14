@@ -1,3 +1,4 @@
+// ✅ SideBar.jsx
 import React, { useState } from "react";
 import {
   Box,
@@ -20,30 +21,104 @@ import {
   Home as HomeIcon,
   MyLocation as MyLocationIcon,
   BarChart as BarChartIcon,
+  Public as PublicIcon,
 } from "@mui/icons-material";
 
-function SideBar({ setTopN, setRegion }) {
+function SideBar({
+  setTopN,
+  setRegion,
+  setLayerVisibility,
+  setShowBubbleRenderingLayerControl,
+  setShowPlanarRenderingLayerControl,
+  setLegendType,
+  setLabels,
+  setColors,
+  setSizes,
+}) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const [open, setOpen] = useState({ region: false, ranking: false });
+  const [open, setOpen] = useState({
+    region: false,
+    ranking: false,
+    rendering: false,
+  });
   const [selectedRegionMobile, setSelectedRegionMobile] = useState("");
 
   const handleClick = (key) => {
     setOpen((prevState) => ({
-      ...prevState,
-      [key]: !prevState[key],
-      ...(key === "region" && { ranking: false }),
-      ...(key === "ranking" && { region: false }),
+      region: key === "region" ? !prevState.region : false,
+      ranking: key === "ranking" ? !prevState.ranking : false,
+      rendering: key === "rendering" ? !prevState.rendering : false,
     }));
   };
 
   const handleTopNClick = (n) => setTopN(n);
   const handleRegionClick = (region) => setRegion(region);
-
   const handleRegionChangeMobile = (event) => {
     const region = event.target.value;
     setSelectedRegionMobile(region);
     setRegion(region);
+  };
+
+  // 图例数据
+  const circleLabels = [
+    "null",
+    "0 - 100",
+    "100 - 500",
+    "500 - 1000",
+    "1000 - 1500",
+    "1500 - 3000",
+    ">3000",
+  ];
+  const circleColors = [
+    "#fff",
+    "#d9d9d9",
+    "#bdbdbd",
+    "#969696",
+    "#737373",
+    "#525252",
+    "#252525",
+  ];
+  const circleSizes = [5, 10, 15, 20, 25, 30, 35];
+
+  const fillLabels = [
+    "No data",
+    "0–1 Mt",
+    "1–10 Mt",
+    "10–100 Mt",
+    "100–1000 Mt",
+    ">1000 Mt",
+  ];
+  const fillColors = [
+    "#cccccc",
+    "#ffffcc",
+    "#ffeda0",
+    "#feb24c",
+    "#f03b20",
+    "#bd0026",
+  ];
+
+  // 切换图层及图例
+  const handleAddBubbleRendering = () => {
+    setLayerVisibility("emissions-layer", true);
+    setLayerVisibility("planar-rendering-layer", false);
+    setShowBubbleRenderingLayerControl(true);
+    setShowPlanarRenderingLayerControl(false);
+    setLegendType("circle");
+    setLabels(circleLabels);
+    setColors(circleColors);
+    setSizes(circleSizes);
+  };
+
+  const handleAddPlanarRendering = () => {
+    setLayerVisibility("planar-rendering-layer", true);
+    setLayerVisibility("emissions-layer", false);
+    setShowPlanarRenderingLayerControl(true);
+    setShowBubbleRenderingLayerControl(false);
+    setLegendType("fill");
+    setLabels(fillLabels);
+    setColors(fillColors);
+    setSizes([]); // fill 图例不需要大小
   };
 
   const regions = [
@@ -64,7 +139,7 @@ function SideBar({ setTopN, setRegion }) {
         height: "100%",
         padding: 2,
         bgcolor: theme.palette.background.paper,
-        color: theme.palette.text.primary, // 依赖主题颜色
+        color: theme.palette.text.primary,
       }}
     >
       <List
@@ -75,29 +150,18 @@ function SideBar({ setTopN, setRegion }) {
       >
         <ListItemButton>
           <ListItemIcon>
-            {" "}
-            {/* 依赖主题颜色 */}
             <HomeIcon />
           </ListItemIcon>
-          <ListItemText primary="Home page" /> {/* 依赖主题颜色 */}
+          <ListItemText primary="Home page" />
         </ListItemButton>
 
+        {/* ✅ Region 菜单 */}
         {isMobile ? (
-          //  移动端：使用带图标的下拉选择框（图标和文字在一行）
           <FormControl fullWidth margin="normal">
             <InputLabel
               id="region-select-label"
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                color: theme.palette.text.primary, // 依赖主题颜色
-              }}
+              sx={{ color: theme.palette.text.primary }}
             >
-              <ListItemIcon sx={{ mr: 1 }}>
-                {" "}
-                {/* 依赖主题颜色 */}
-                <MyLocationIcon />
-              </ListItemIcon>
               Region
             </InputLabel>
             <Select
@@ -106,8 +170,8 @@ function SideBar({ setTopN, setRegion }) {
               value={selectedRegionMobile}
               label="Region"
               onChange={handleRegionChangeMobile}
-              sx={{ color: theme.palette.text.primary }} // 依赖主题颜色
-              inputProps={{ style: { color: theme.palette.text.primary } }} // 依赖主题颜色
+              sx={{ color: theme.palette.text.primary }}
+              inputProps={{ style: { color: theme.palette.text.primary } }}
               MenuProps={{
                 PaperProps: {
                   sx: {
@@ -124,25 +188,19 @@ function SideBar({ setTopN, setRegion }) {
               </MenuItem>
               {regions.map((region) => (
                 <MenuItem key={region} value={region}>
-                  {" "}
-                  {/* 依赖主题颜色 */}
                   {region}
                 </MenuItem>
               ))}
             </Select>
           </FormControl>
         ) : (
-          //  桌面端：保持原有的展开列表，并依赖主题颜色
           <>
             <ListItemButton onClick={() => handleClick("region")}>
               <ListItemIcon>
-                {" "}
-                {/* 依赖主题颜色 */}
                 <MyLocationIcon />
               </ListItemIcon>
-              <ListItemText primary="Region" /> {/* 依赖主题颜色 */}
-              {open.region ? <ExpandLess /> : <ExpandMore />}{" "}
-              {/* 依赖主题颜色 */}
+              <ListItemText primary="Region" />
+              {open.region ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
             <Collapse in={open.region} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
@@ -152,7 +210,7 @@ function SideBar({ setTopN, setRegion }) {
                     sx={{ pl: 9 }}
                     onClick={() => handleRegionClick(region)}
                   >
-                    <ListItemText primary={region} /> {/* 依赖主题颜色 */}
+                    <ListItemText primary={region} />
                   </ListItemButton>
                 ))}
               </List>
@@ -160,14 +218,13 @@ function SideBar({ setTopN, setRegion }) {
           </>
         )}
 
+        {/* ✅ Ranking 菜单 */}
         <ListItemButton onClick={() => handleClick("ranking")}>
           <ListItemIcon>
-            {" "}
-            {/* 依赖主题颜色 */}
             <BarChartIcon />
           </ListItemIcon>
-          <ListItemText primary="Ranking" /> {/* 依赖主题颜色 */}
-          {open.ranking ? <ExpandLess /> : <ExpandMore />} {/* 依赖主题颜色 */}
+          <ListItemText primary="Ranking" />
+          {open.ranking ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
         <Collapse in={open.ranking} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
@@ -177,9 +234,28 @@ function SideBar({ setTopN, setRegion }) {
                 sx={{ pl: 9 }}
                 onClick={() => handleTopNClick(n)}
               >
-                <ListItemText primary={`Top ${n}`} /> {/* 依赖主题颜色 */}
+                <ListItemText primary={`Top ${n}`} />
               </ListItemButton>
             ))}
+          </List>
+        </Collapse>
+
+        {/* ✅ Rendering 菜单 */}
+        <ListItemButton onClick={() => handleClick("rendering")}>
+          <ListItemIcon>
+            <PublicIcon />
+          </ListItemIcon>
+          <ListItemText primary="Rendering" />
+          {open.rendering ? <ExpandLess /> : <ExpandMore />}
+        </ListItemButton>
+        <Collapse in={open.rendering} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            <ListItemButton sx={{ pl: 9 }} onClick={handleAddBubbleRendering}>
+              <ListItemText primary="Bubble Rendering" />
+            </ListItemButton>
+            <ListItemButton sx={{ pl: 9 }} onClick={handleAddPlanarRendering}>
+              <ListItemText primary="Planar Rendering" />
+            </ListItemButton>
           </List>
         </Collapse>
       </List>

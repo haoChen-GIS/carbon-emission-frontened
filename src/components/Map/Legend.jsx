@@ -1,7 +1,8 @@
+// ✅ Legend.jsx
 import React from "react";
 import { Box, Typography, useMediaQuery, useTheme, Grid } from "@mui/material";
 
-function Legend({ labels, colors, sizes }) {
+function Legend({ labels, colors, sizes, type = "circle" }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -21,7 +22,6 @@ function Legend({ labels, colors, sizes }) {
         boxShadow: 3,
         minWidth: isMobile ? 260 : 260,
         maxWidth: isMobile ? 320 : 300,
-        // border: "1px solid #ccc",
         ...positionStyle,
       }}
     >
@@ -29,73 +29,51 @@ function Legend({ labels, colors, sizes }) {
         Global Carbon Emissions (MtCO₂)
       </Typography>
 
-      {isMobile ? (
-        // ✅ 移动端：两行四列
-        <Grid container spacing={0.5} justifyContent="flex-start">
-          {labels.map((label, i) => (
-            <Grid key={i} size={3}>
+      <Grid container spacing={isMobile ? 0.5 : 2}>
+        {labels.map((label, i) => (
+          <Grid key={i} item {...(isMobile ? { size: 3 } : { size: 12 })}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                flexDirection: isMobile ? "column" : "row",
+              }}
+            >
               <Box
                 sx={{
-                  height: 56, // ✅ 原来是 64，图例高度减少
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  width:
+                    type === "fill"
+                      ? 24
+                      : (sizes?.[i] || 12) * (isMobile ? 0.7 : 1),
+                  height:
+                    type === "fill"
+                      ? 16
+                      : (sizes?.[i] || 12) * (isMobile ? 0.7 : 1),
+                  borderRadius: type === "fill" ? 2 : "50%",
+                  backgroundColor: colors[i],
+                  border: "1px solid #666",
+                  marginRight: isMobile ? 0 : 1,
+                  marginBottom: isMobile ? 0.3 : 0,
+                  flexShrink: 0,
+                }}
+              />
+              <Typography
+                variant="caption"
+                sx={{
+                  fontSize: isMobile ? "0.65rem" : "0.85rem",
                   textAlign: "center",
+                  maxWidth: isMobile ? 60 : "none",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
                 }}
               >
-                <Box
-                  sx={{
-                    width: sizes[i] * 0.7, // ✅ 缩小圆圈大小
-                    height: sizes[i] * 0.7,
-                    borderRadius: "50%",
-                    backgroundColor: colors[i],
-                    border: "1px solid #666",
-                    mb: 0.3,
-                    flexShrink: 0,
-                  }}
-                />
-                <Typography
-                  variant="caption"
-                  sx={{
-                    fontSize: "0.65rem", // ✅ 字体缩小
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    maxWidth: 60,
-                  }}
-                >
-                  {label}
-                </Typography>
-              </Box>
-            </Grid>
-          ))}
-        </Grid>
-      ) : (
-        // ✅ 桌面端：两列
-        <Grid container spacing={2}>
-          {labels.map((label, i) => (
-            <Grid key={i} size={12}>
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <Box
-                  sx={{
-                    width: sizes[i],
-                    height: sizes[i],
-                    borderRadius: "50%",
-                    backgroundColor: colors[i],
-                    border: "1px solid #666",
-                    marginRight: 1,
-                    flexShrink: 0,
-                  }}
-                />
-                <Typography variant="body2" sx={{ fontSize: "0.85rem" }}>
-                  {label}
-                </Typography>
-              </Box>
-            </Grid>
-          ))}
-        </Grid>
-      )}
+                {label}
+              </Typography>
+            </Box>
+          </Grid>
+        ))}
+      </Grid>
     </Box>
   );
 }

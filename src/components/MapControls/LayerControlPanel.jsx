@@ -10,7 +10,9 @@ import {
 export default function LayerControlPanel({
   layersVisibility,
   setLayersVisibility,
-  showTopEmissions, // 接收来自父组件的状态
+  showBubbleRendering, // ✅ 控制是否显示 Bubble 图层项
+  showTopEmissions, // ✅ 控制是否显示 TopN 图层项
+  showPlanarRendering, // ✅ 控制是否显示 Planar 图层项
 }) {
   const handleChange = (layerId) => {
     setLayersVisibility((prev) => ({
@@ -33,17 +35,23 @@ export default function LayerControlPanel({
         Layer Control
       </Typography>
       <Divider sx={{ mb: 1 }} />
+
       <FormGroup>
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={layersVisibility["emissions-layer"]}
-              onChange={() => handleChange("emissions-layer")}
-            />
-          }
-          label="Carbon Emission Layer"
-        />
-        {showTopEmissions && ( // 只有当 showTopEmissions 为 true 时才渲染
+        {/* ✅ 仅在 Bubble 渲染时显示 */}
+        {showBubbleRendering && (
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={layersVisibility["emissions-layer"]}
+                onChange={() => handleChange("emissions-layer")}
+              />
+            }
+            label="Carbon Emission Layer"
+          />
+        )}
+
+        {/* ✅ Top 排名图层控制 */}
+        {showTopEmissions && (
           <FormControlLabel
             control={
               <Checkbox
@@ -52,6 +60,19 @@ export default function LayerControlPanel({
               />
             }
             label="Top Emitters"
+          />
+        )}
+
+        {/* ✅ 面状渲染图层控制 */}
+        {showPlanarRendering && (
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={layersVisibility["planar-rendering-layer"]}
+                onChange={() => handleChange("planar-rendering-layer")}
+              />
+            }
+            label="Planar Rendering"
           />
         )}
       </FormGroup>

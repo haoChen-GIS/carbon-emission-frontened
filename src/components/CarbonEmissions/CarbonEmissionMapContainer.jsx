@@ -1,5 +1,5 @@
 import mapboxgl from "mapbox-gl";
-import React, { useEffect, useRef, useState, useMemo } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Box, Slider, Typography, IconButton } from "@mui/material";
 import { PlayArrow, Pause } from "@mui/icons-material";
 
@@ -12,6 +12,10 @@ function CarbonEmissionMapContainer({
   region,
   layersVisibility = {},
   sidebarOpen,
+  legendType,
+  labels,
+  colors,
+  sizes,
 }) {
   console.log(API_BASE_URL);
   const mapContainer = useRef(null);
@@ -22,32 +26,6 @@ function CarbonEmissionMapContainer({
   const [chartOpen, setChartOpen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const playInterval = useRef(null);
-
-  const sizes = useMemo(() => [5, 10, 15, 20, 25, 30, 35], []);
-  const colors = useMemo(
-    () => [
-      "#fff",
-      "#d9d9d9",
-      "#bdbdbd",
-      "#969696",
-      "#737373",
-      "#525252",
-      "#252525",
-    ],
-    []
-  );
-  const labels = useMemo(
-    () => [
-      "null",
-      "0 - 100",
-      "100 - 500",
-      "500 - 1000",
-      "1000 - 1500",
-      "1500 - 3000",
-      ">3000",
-    ],
-    []
-  );
 
   // 控制图层显示/隐藏
   useEffect(() => {
@@ -68,6 +46,10 @@ function CarbonEmissionMapContainer({
       updateLayerVisibility(
         "top-emissions-layer",
         layersVisibility["top-emissions-layer"]
+      );
+      updateLayerVisibility(
+        "choropleth-fill",
+        layersVisibility["planar-rendering-layer"]
       );
     }
   }, [layersVisibility]);
@@ -187,20 +169,60 @@ function CarbonEmissionMapContainer({
         },
       });
 
+      map.current.addSource("choropleth-emissions", {
+        type: "vector",
+        url: "mapbox://delusion-haochen.b7g651zg",
+      });
+
+      map.current.addLayer({
+        id: "choropleth-fill",
+        type: "fill",
+        source: "choropleth-emissions",
+        "source-layer": "carbon_emissions_entity-5miyyl",
+        layout: {
+          visibility: "none", // ✅ 初始隐藏
+        },
+        paint: {
+          "fill-color": [
+            "case",
+            ["!", ["has", `emissions_${year}`]],
+            "#cccccc",
+            [">", ["coalesce", ["get", `emissions_${year}`], -1], -1],
+            [
+              "interpolate",
+              ["linear"],
+              ["/", ["get", `emissions_${year}`], 1000000],
+              0,
+              "#ffffcc",
+              1,
+              "#ffeda0",
+              10,
+              "#feb24c",
+              100,
+              "#f03b20",
+              1000,
+              "#bd0026",
+            ],
+            "rgba(0,0,0,0)",
+          ],
+          "fill-opacity": 0.85,
+        },
+      });
+
       // 添加点击事件，用于显示图表弹窗
       map.current.on("click", "emissions-layer", async (e) => {
         if (e.features.length > 0) {
           const feature = e.features[0];
-          const country = feature.properties.country;
+          const entity = feature.properties.country;
 
           try {
             const response = await fetch(
-              `${API_BASE_URL}/api/emissions/${country}`
+              `${API_BASE_URL}/api/emissions/${entity}`
             );
             const result = await response.json();
 
             if (Array.isArray(result.emissions)) {
-              setSelectedCountry(country);
+              setSelectedCountry(entity);
               setChartData(result.emissions);
               setChartOpen(true);
             }
@@ -230,6 +252,30 @@ function CarbonEmissionMapContainer({
         year,
       ]);
     }
+    if (map.current.getLayer("choropleth-fill")) {
+      map.current.setPaintProperty("choropleth-fill", "fill-color", [
+        "case",
+        ["!", ["has", `emissions_${year}`]],
+        "#cccccc",
+        [">", ["coalesce", ["get", `emissions_${year}`], -1], -1],
+        [
+          "interpolate",
+          ["linear"],
+          ["/", ["get", `emissions_${year}`], 1000000],
+          0,
+          "#ffffcc",
+          1,
+          "#ffeda0",
+          10,
+          "#feb24c",
+          100,
+          "#f03b20",
+          1000,
+          "#bd0026",
+        ],
+        "rgba(0,0,0,0)",
+      ]);
+    }
   }, [year]);
 
   useEffect(() => {
@@ -256,7 +302,9 @@ function CarbonEmissionMapContainer({
           const response = await fetch(
             `${API_BASE_URL}/api/emissions/top/${topN}/${year}`
           );
+          console.log(`${API_BASE_URL}/api/emissions/top/${topN}/${year}`);
           const data = await response.json();
+          console.log("Top N emissions data:", data);
           if (Array.isArray(data.emissions)) {
             const features = data.emissions.map((e) => ({
               type: "Feature",
@@ -375,6 +423,7 @@ function CarbonEmissionMapContainer({
         colors={colors}
         sizes={sizes}
         sidebarOpen={sidebarOpen}
+        type={legendType} // ✅ 动态图例类型
       />
 
       <CarbonEmissionChart

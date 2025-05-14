@@ -24,11 +24,39 @@ export default function CarbonEmissionMapPage() {
   const [showLayerPanelDesktop, setShowLayerPanelDesktop] = useState(false);
   const [showPanelMobile, setShowPanelMobile] = useState(false);
   const [activeTabMobile, setActiveTabMobile] = useState(0);
+  const [labels, setLabels] = useState([
+    "null",
+    "0 - 100",
+    "100 - 500",
+    "500 - 1000",
+    "1000 - 1500",
+    "1500 - 3000",
+    ">3000",
+  ]);
+  const [colors, setColors] = useState([
+    "#fff",
+    "#d9d9d9",
+    "#bdbdbd",
+    "#969696",
+    "#737373",
+    "#525252",
+    "#252525",
+  ]);
+  const [sizes, setSizes] = useState([5, 10, 15, 20, 25, 30, 35]);
+  const [legendType, setLegendType] = useState("circle");
+
+  const [showBubbleRenderingLayerControl, setShowBubbleRenderingLayerControl] =
+    useState(true); // 控制是否显示 Bubble Rendering 控制项
   const [showTopEmissionsLayerControl, setShowTopEmissionsLayerControl] =
     useState(false); // 控制是否显示 Top Emitters 控制项
+  const [showPlanarRenderingLayerControl, setShowPlanarRenderingLayerControl] =
+    useState(false); // 控制是否显示 Planar Rendering 控制项
+
+  // 初始图层的可见性
   const [layersVisibility, setLayersVisibility] = useState({
     "emissions-layer": true,
-    "top-emissions-layer": false, // 初始时 Top Emitters 图层不可见
+    "top-emissions-layer": false,
+    "planar-rendering-layer": false, // ✅ 新增
   });
 
   const theme = useTheme();
@@ -79,7 +107,26 @@ export default function CarbonEmissionMapPage() {
           <>
             {/* Sidebar */}
             <Box sx={{ width: 240 }}>
-              <SideBar setRegion={setRegion} setTopN={setTopN} />
+              <SideBar
+                setRegion={setRegion}
+                setTopN={setTopN}
+                setLayerVisibility={(layerId, visible) =>
+                  setLayersVisibility((prev) => ({
+                    ...prev,
+                    [layerId]: visible,
+                  }))
+                }
+                setShowBubbleRenderingLayerControl={
+                  setShowBubbleRenderingLayerControl
+                }
+                setShowPlanarRenderingLayerControl={
+                  setShowPlanarRenderingLayerControl
+                }
+                setLegendType={setLegendType}
+                setLabels={setLabels}
+                setColors={setColors}
+                setSizes={setSizes}
+              />
             </Box>
 
             {/* 折叠按钮，固定在 Sidebar 右边 */}
@@ -108,7 +155,9 @@ export default function CarbonEmissionMapPage() {
                 <LayerControlWrapper
                   layersVisibility={layersVisibility}
                   setLayersVisibility={setLayersVisibility}
+                  showBubbleRendering={showBubbleRenderingLayerControl} // ✅ ✅ ✅ 加上这一行！
                   showTopEmissions={showTopEmissionsLayerControl} // 传递控制 Top Emitters 显示的状态
+                  showPlanarRendering={showPlanarRenderingLayerControl} // 传递控制 Planar Rendering 显示的状态
                 />
               </Box>
             )}
@@ -146,13 +195,34 @@ export default function CarbonEmissionMapPage() {
                   <Tab label="Layers" />
                 </Tabs>
                 {activeTabMobile === 0 && (
-                  <SideBar setRegion={setRegion} setTopN={setTopN} />
+                  <SideBar
+                    setRegion={setRegion}
+                    setTopN={setTopN}
+                    setLayerVisibility={(layerId, visible) =>
+                      setLayersVisibility((prev) => ({
+                        ...prev,
+                        [layerId]: visible,
+                      }))
+                    }
+                    setShowBubbleRenderingLayerControl={
+                      setShowBubbleRenderingLayerControl
+                    }
+                    setShowPlanarRenderingLayerControl={
+                      setShowPlanarRenderingLayerControl
+                    }
+                    setLegendType={setLegendType}
+                    setLabels={setLabels}
+                    setColors={setColors}
+                    setSizes={setSizes}
+                  />
                 )}
                 {activeTabMobile === 1 && (
                   <LayerControlWrapper
                     layersVisibility={layersVisibility}
                     setLayersVisibility={setLayersVisibility}
+                    showBubbleRendering={showBubbleRenderingLayerControl} // ✅ ✅ ✅ 加上这一行！
                     showTopEmissions={showTopEmissionsLayerControl} // 传递控制 Top Emitters 显示的状态
+                    showPlanarRendering={showPlanarRenderingLayerControl} // 传递控制 Planar Rendering 显示的状态
                   />
                 )}
               </Box>
@@ -207,6 +277,10 @@ export default function CarbonEmissionMapPage() {
             mobileLayerPanelOpen={
               isMobile && showPanelMobile && activeTabMobile === 1
             }
+            labels={labels}
+            colors={colors}
+            sizes={sizes}
+            legendType={legendType}
           />
         </Box>
       </Box>

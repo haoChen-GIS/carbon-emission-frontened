@@ -7,6 +7,7 @@ import SignIn from "./pages/Authentication/Login";
 import SignUp from "./pages/Authentication/Register";
 import ForgetPassword from "./pages/Authentication/ResetPassword";
 import CarbonEmissionMapPage from "./pages/CarbonEmissionMapPage";
+import ChoroplethMap from "./components/CarbonEmissions/ChoroplethMap";
 import { ThemeProvider } from "./Context/ThemeContext";
 export default function App() {
   return (
@@ -22,6 +23,11 @@ export default function App() {
               path="/carbon-emission"
               element={<CarbonEmissionMapPage />}
             />
+            <Route
+              path="/carbon-emission/choropleth"
+              element={<ChoroplethMap />}
+            />
+
             <Route path="/home" element={<HomePage />} />
           </Routes>
         </Router>
