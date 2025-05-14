@@ -189,11 +189,27 @@ export default function CarbonEmissionMapPage() {
                 <Tabs
                   value={activeTabMobile}
                   onChange={handleTabChangeMobile}
-                  sx={{ bgcolor: "grey.800" }}
+                  textColor="inherit"
+                  indicatorColor="secondary"
+                  sx={{
+                    backgroundColor: theme.palette.background.paper,
+                    color: theme.palette.text.primary,
+                    "& .MuiTab-root": {
+                      color: theme.palette.text.secondary,
+                    },
+                    "& .Mui-selected": {
+                      color: theme.palette.text.primary,
+                      fontWeight: "bold",
+                    },
+                    "& .MuiTabs-indicator": {
+                      backgroundColor: theme.palette.primary.main,
+                    },
+                  }}
                 >
                   <Tab label="Sidebar" />
                   <Tab label="Layers" />
                 </Tabs>
+
                 {activeTabMobile === 0 && (
                   <SideBar
                     setRegion={setRegion}

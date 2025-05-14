@@ -157,11 +157,21 @@ function SideBar({
 
         {/* ✅ Region 菜单 */}
         {isMobile ? (
+          //  移动端：使用带图标的下拉选择框（图标和文字在一行）
           <FormControl fullWidth margin="normal">
             <InputLabel
               id="region-select-label"
-              sx={{ color: theme.palette.text.primary }}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                color: theme.palette.text.primary, // 依赖主题颜色
+              }}
             >
+              <ListItemIcon sx={{ mr: 1 }}>
+                {" "}
+                {/* 依赖主题颜色 */}
+                <MyLocationIcon />
+              </ListItemIcon>
               Region
             </InputLabel>
             <Select
@@ -170,8 +180,8 @@ function SideBar({
               value={selectedRegionMobile}
               label="Region"
               onChange={handleRegionChangeMobile}
-              sx={{ color: theme.palette.text.primary }}
-              inputProps={{ style: { color: theme.palette.text.primary } }}
+              sx={{ color: theme.palette.text.primary }} // 依赖主题颜色
+              inputProps={{ style: { color: theme.palette.text.primary } }} // 依赖主题颜色
               MenuProps={{
                 PaperProps: {
                   sx: {
@@ -188,6 +198,8 @@ function SideBar({
               </MenuItem>
               {regions.map((region) => (
                 <MenuItem key={region} value={region}>
+                  {" "}
+                  {/* 依赖主题颜色 */}
                   {region}
                 </MenuItem>
               ))}
