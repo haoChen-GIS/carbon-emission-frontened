@@ -11,6 +11,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import MenuIcon from "@mui/icons-material/Menu";
 import LayersIcon from "@mui/icons-material/Layers";
 import { Drawer } from "@mui/material";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
 import { useState, useEffect } from "react";
 
 import TopAppBar from "../components/Common/TopAppBar";
@@ -156,7 +157,7 @@ export default function CarbonEmissionMapPage() {
                 <LayerControlWrapper
                   layersVisibility={layersVisibility}
                   setLayersVisibility={setLayersVisibility}
-                  showBubbleRendering={showBubbleRenderingLayerControl} // 加上这一行！
+                  showBubbleRendering={showBubbleRenderingLayerControl} // ✅ ✅ ✅ 加上这一行！
                   showTopEmissions={showTopEmissionsLayerControl} // 传递控制 Top Emitters 显示的状态
                   showPlanarRendering={showPlanarRenderingLayerControl} // 传递控制 Planar Rendering 显示的状态
                 />
@@ -170,10 +171,9 @@ export default function CarbonEmissionMapPage() {
           <>
             {/* Mobile Tabbed Panel */}
             {showPanelMobile && (
-              //Drawer组件 从下方滑出
+              //自定义的Drawer组件 从下方滑出
               <Drawer
-                anchor="bottom" //从底部滑出
-                hideBackdrop={true} //禁止半遮罩
+                anchor="bottom"
                 open={showPanelMobile}
                 onClose={() => setShowPanelMobile(false)}
                 slotProps={{
@@ -182,7 +182,7 @@ export default function CarbonEmissionMapPage() {
                       height: "60%",
                       borderTopLeftRadius: 8,
                       borderTopRightRadius: 8,
-                      backgroundColor: theme.palette.background.paper, // 统一背景色
+                      backgroundColor: theme.palette.background.paper, // ✅ 统一背景
                     },
                   },
                 }}
@@ -288,6 +288,7 @@ export default function CarbonEmissionMapPage() {
         )}
 
         {/* 地图区域 */}
+
         <Box
           sx={{ flexGrow: 1 }}
           onClick={() => {
