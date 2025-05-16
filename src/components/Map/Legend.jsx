@@ -31,7 +31,7 @@ function Legend({ labels, colors, sizes, type = "circle" }) {
 
       <Grid container spacing={isMobile ? 0.5 : 2}>
         {labels.map((label, i) => (
-          <Grid key={i} item {...(isMobile ? { size: 3 } : { size: 12 })}>
+          <Grid key={i} {...(isMobile ? { size: 3 } : { size: 12 })}>
             <Box
               sx={{
                 display: "flex",

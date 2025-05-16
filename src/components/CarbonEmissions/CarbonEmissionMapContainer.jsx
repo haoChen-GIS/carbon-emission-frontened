@@ -17,7 +17,7 @@ function CarbonEmissionMapContainer({
   colors,
   sizes,
 }) {
-  console.log(API_BASE_URL);
+  // console.log(API_BASE_URL);
   const mapContainer = useRef(null);
   const map = useRef(null);
   const [year, setYear] = useState(2022);
@@ -302,9 +302,9 @@ function CarbonEmissionMapContainer({
           const response = await fetch(
             `${API_BASE_URL}/api/emissions/top/${topN}/${year}` //API——BASE——URL是一个环境变量，由Railway提供，是后端程序的地址
           );
-          console.log(`${API_BASE_URL}/api/emissions/top/${topN}/${year}`);
+          //  console.log(`${API_BASE_URL}/api/emissions/top/${topN}/${year}`);
           const data = await response.json();
-          console.log("Top N emissions data:", data);
+          // console.log("Top N emissions data:", data);
           if (Array.isArray(data.emissions)) {
             const features = data.emissions.map((e) => ({
               type: "Feature",
