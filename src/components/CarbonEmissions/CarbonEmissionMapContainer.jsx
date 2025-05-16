@@ -217,7 +217,7 @@ function CarbonEmissionMapContainer({
 
           try {
             const response = await fetch(
-              `${API_BASE_URL}/api/emissions/${entity}`
+              `${API_BASE_URL}/api/emissions/${entity}` //API——BASE——URL是一个环境变量，由Railway提供，是后端程序的地址
             );
             const result = await response.json();
 
@@ -300,7 +300,7 @@ function CarbonEmissionMapContainer({
       const fetchTopNEmissions = async () => {
         try {
           const response = await fetch(
-            `${API_BASE_URL}/api/emissions/top/${topN}/${year}`
+            `${API_BASE_URL}/api/emissions/top/${topN}/${year}` //API——BASE——URL是一个环境变量，由Railway提供，是后端程序的地址
           );
           console.log(`${API_BASE_URL}/api/emissions/top/${topN}/${year}`);
           const data = await response.json();
@@ -332,7 +332,7 @@ function CarbonEmissionMapContainer({
 
   useEffect(() => {
     if (map.current) {
-      map.current.getCanvas().blur(); // ⬅️ 让 canvas 失去焦点
+      map.current.getCanvas().blur(); // 让 canvas 失去焦点
     }
   }, []);
 

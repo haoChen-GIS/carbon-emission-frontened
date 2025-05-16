@@ -10,6 +10,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import MenuIcon from "@mui/icons-material/Menu";
 import LayersIcon from "@mui/icons-material/Layers";
+import { Drawer } from "@mui/material";
 import { useState, useEffect } from "react";
 
 import TopAppBar from "../components/Common/TopAppBar";
@@ -155,7 +156,7 @@ export default function CarbonEmissionMapPage() {
                 <LayerControlWrapper
                   layersVisibility={layersVisibility}
                   setLayersVisibility={setLayersVisibility}
-                  showBubbleRendering={showBubbleRenderingLayerControl} // ✅ ✅ ✅ 加上这一行！
+                  showBubbleRendering={showBubbleRenderingLayerControl} // 加上这一行！
                   showTopEmissions={showTopEmissionsLayerControl} // 传递控制 Top Emitters 显示的状态
                   showPlanarRendering={showPlanarRenderingLayerControl} // 传递控制 Planar Rendering 显示的状态
                 />
@@ -169,30 +170,32 @@ export default function CarbonEmissionMapPage() {
           <>
             {/* Mobile Tabbed Panel */}
             {showPanelMobile && (
-              <Box
-                sx={{
-                  position: "absolute",
-                  bottom: 0,
-                  left: 0,
-                  width: "100%",
-                  height: "60%",
-                  zIndex: 10,
-                  bgcolor: "background.paper",
-                  transition: "transform 0.3s",
-                  transform: showPanelMobile
-                    ? "translateY(0)"
-                    : "translateY(100%)",
-                  display: "flex",
-                  flexDirection: "column",
+              //Drawer组件 从下方滑出
+              <Drawer
+                anchor="bottom" //从底部滑出
+                hideBackdrop={true} //禁止半遮罩
+                open={showPanelMobile}
+                onClose={() => setShowPanelMobile(false)}
+                slotProps={{
+                  paper: {
+                    sx: {
+                      height: "60%",
+                      borderTopLeftRadius: 8,
+                      borderTopRightRadius: 8,
+                      backgroundColor: theme.palette.background.paper, // 统一背景色
+                    },
+                  },
                 }}
               >
+                {/* 顶部 Tab 切换栏 */}
                 <Tabs
                   value={activeTabMobile}
                   onChange={handleTabChangeMobile}
+                  variant="fullWidth"
                   textColor="inherit"
                   indicatorColor="secondary"
                   sx={{
-                    backgroundColor: theme.palette.background.paper,
+                    backgroundColor: theme.palette.background.default,
                     color: theme.palette.text.primary,
                     "& .MuiTab-root": {
                       color: theme.palette.text.secondary,
@@ -210,38 +213,48 @@ export default function CarbonEmissionMapPage() {
                   <Tab label="Layers" />
                 </Tabs>
 
-                {activeTabMobile === 0 && (
-                  <SideBar
-                    setRegion={setRegion}
-                    setTopN={setTopN}
-                    setLayerVisibility={(layerId, visible) =>
-                      setLayersVisibility((prev) => ({
-                        ...prev,
-                        [layerId]: visible,
-                      }))
-                    }
-                    setShowBubbleRenderingLayerControl={
-                      setShowBubbleRenderingLayerControl
-                    }
-                    setShowPlanarRenderingLayerControl={
-                      setShowPlanarRenderingLayerControl
-                    }
-                    setLegendType={setLegendType}
-                    setLabels={setLabels}
-                    setColors={setColors}
-                    setSizes={setSizes}
-                  />
-                )}
-                {activeTabMobile === 1 && (
-                  <LayerControlWrapper
-                    layersVisibility={layersVisibility}
-                    setLayersVisibility={setLayersVisibility}
-                    showBubbleRendering={showBubbleRenderingLayerControl} // ✅ ✅ ✅ 加上这一行！
-                    showTopEmissions={showTopEmissionsLayerControl} // 传递控制 Top Emitters 显示的状态
-                    showPlanarRendering={showPlanarRenderingLayerControl} // 传递控制 Planar Rendering 显示的状态
-                  />
-                )}
-              </Box>
+                {/* 内容区 */}
+                <Box
+                  sx={{
+                    flex: 1,
+                    overflowY: "auto",
+                    p: 1,
+                    bgcolor: theme.palette.background.default,
+                  }}
+                >
+                  {activeTabMobile === 0 && (
+                    <SideBar
+                      setRegion={setRegion}
+                      setTopN={setTopN}
+                      setLayerVisibility={(layerId, visible) =>
+                        setLayersVisibility((prev) => ({
+                          ...prev,
+                          [layerId]: visible,
+                        }))
+                      }
+                      setShowBubbleRenderingLayerControl={
+                        setShowBubbleRenderingLayerControl
+                      }
+                      setShowPlanarRenderingLayerControl={
+                        setShowPlanarRenderingLayerControl
+                      }
+                      setLegendType={setLegendType}
+                      setLabels={setLabels}
+                      setColors={setColors}
+                      setSizes={setSizes}
+                    />
+                  )}
+                  {activeTabMobile === 1 && (
+                    <LayerControlWrapper
+                      layersVisibility={layersVisibility}
+                      setLayersVisibility={setLayersVisibility}
+                      showBubbleRendering={showBubbleRenderingLayerControl}
+                      showTopEmissions={showTopEmissionsLayerControl}
+                      showPlanarRendering={showPlanarRenderingLayerControl}
+                    />
+                  )}
+                </Box>
+              </Drawer>
             )}
 
             {/* Toggle Buttons */}
