@@ -38,8 +38,8 @@ function MapePageFooter() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const schoolName = "SUZHOU UNIVERSITY OF SCIENCE AND TECHNOLOGY";
-  //const schoolNameShort = "USTS"; // 缩写
+  const schoolName = "SHANGHAI NORMAL UNIVERSITY"; // 全称
+  //const schoolNameShort = "SHNU"; // 缩写
 
   return (
     <AppBar
@@ -54,7 +54,7 @@ function MapePageFooter() {
       <StyledToolbar>
         <LeftBox>
           <img
-            src="images/USTS.png"
+            src="images/SHNU.png"
             alt="School Logo"
             style={{
               width: isMobile ? 30 : 50,
